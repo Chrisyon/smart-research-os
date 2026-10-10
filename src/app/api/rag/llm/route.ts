@@ -10,7 +10,10 @@ export async function POST(req: NextRequest) {
       passages: { pText: string; docTitle: string }[];
     };
 
-    if (!apiKey || !question) {
+    const effectiveApiKey = (apiKey || '').trim() || (process.env.GEMINI_API_KEY || '').trim() || (process.env.GROQ_API_KEY || '').trim() || (process.env.OPENAI_API_KEY || '').trim();
+    const effectiveProvider = provider || (process.env.GEMINI_API_KEY ? 'gemini' : process.env.GROQ_API_KEY ? 'groq' : 'gemini');
+
+    if (!effectiveApiKey || !question) {
       return NextResponse.json({ error: 'API Key dan pertanyaan wajib diisi.' }, { status: 400 });
     }
 
@@ -31,8 +34,8 @@ Aturan:
     let resultText: string | null = null;
     let errorDetail = '';
 
-    if (provider === 'gemini') {
-      const trimmedKey = apiKey.trim();
+    if (effectiveProvider === 'gemini') {
+      const trimmedKey = effectiveApiKey;
       if (!trimmedKey.startsWith('AIzaSy') && !trimmedKey.startsWith('AQ.') && trimmedKey.length < 20) {
         return NextResponse.json(
           {
@@ -89,13 +92,13 @@ Aturan:
       if (!resultText) {
         errorDetail = `Semua model Gemini gagal: ${allErrors.join(' | ')}. Pastikan API Key valid (dimulai AIzaSy...) dan kuota belum habis.`;
       }
-    } else if (provider === 'groq') {
+    } else if (effectiveProvider === 'groq') {
       try {
         const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${apiKey.trim()}`,
+            Authorization: `Bearer ${effectiveApiKey}`,
           },
           body: JSON.stringify({
             model: 'llama-3.3-70b-versatile',
@@ -116,13 +119,13 @@ Aturan:
       } catch (e) {
         errorDetail = `Groq error: ${e instanceof Error ? e.message : String(e)}`;
       }
-    } else if (provider === 'openai') {
+    } else if (effectiveProvider === 'openai') {
       try {
         const res = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${apiKey.trim()}`,
+            Authorization: `Bearer ${effectiveApiKey}`,
           },
           body: JSON.stringify({
             model: 'gpt-4o-mini',
