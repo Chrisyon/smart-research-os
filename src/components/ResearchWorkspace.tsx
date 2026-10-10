@@ -117,7 +117,7 @@ Tanyakan apa saja seputar dokumen Anda (seperti *"ini file isinya apa"*, *"sebut
   };
 
   return (
-    <div className="flex flex-col h-full w-full max-w-7xl mx-auto select-none min-h-0">
+    <div className="flex flex-col h-full w-full max-w-7xl mx-auto min-h-0">
       {/* Mobile Switcher Tab (Visible on small screens only) */}
       <div className="flex md:hidden items-center p-1 bg-slate-900 border panel-border rounded-xl mb-2 shrink-0">
         <button

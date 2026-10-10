@@ -66,6 +66,8 @@ button {
   border: none;
   font: inherit;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 input, select, textarea {

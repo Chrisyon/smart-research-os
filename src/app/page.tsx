@@ -57,7 +57,7 @@ export default function Home() {
 
   return (
     <ThemeProvider>
-      <div className="flex flex-col h-[100dvh] max-h-[100dvh] w-full bg-slate-950 text-slate-100 overflow-hidden font-sans select-none">
+      <div className="flex flex-col h-[100dvh] max-h-[100dvh] w-full bg-slate-950 text-slate-100 overflow-hidden font-sans">
         {/* Top Modern Header Bar */}
         <Header
           projects={projects}

@@ -52,7 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="bg-slate-950/95 backdrop-blur-md z-20 shrink-0 select-none border-b panel-border">
+    <header className="bg-slate-950/95 backdrop-blur-md z-20 shrink-0 border-b panel-border">
       {/* Top Bar: Brand, Project Selector, Quick Action Buttons */}
       <div className="px-3 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-2">
         {/* Brand & Project Selector */}
@@ -138,15 +138,16 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Horizontal Nav Bar (Mobile-friendly smooth horizontal scroll) */}
-      <div className="px-2 sm:px-6 py-1 bg-slate-950/80 border-t panel-border flex items-center gap-1 overflow-x-auto no-scrollbar">
+      <div className="px-2 sm:px-6 py-1 bg-slate-950/80 border-t panel-border flex items-center gap-1 overflow-x-auto no-scrollbar relative z-30">
         {navTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = currentTab === tab.id;
           return (
             <button
               key={tab.id}
+              type="button"
               onClick={() => setCurrentTab(tab.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap shrink-0 transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap shrink-0 transition-all cursor-pointer touch-manipulation active:scale-95 select-none ${
                 isActive
                   ? 'bg-indigo-600 text-white shadow-md'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
