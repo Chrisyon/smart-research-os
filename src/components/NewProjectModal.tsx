@@ -44,8 +44,8 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fadeIn select-none">
-      <div className="w-full max-w-md bg-slate-900 border panel-border rounded-3xl p-6 space-y-5 shadow-2xl relative">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 z-50 animate-fadeIn select-none">
+      <div className="w-full max-w-md bg-slate-900 border panel-border rounded-2xl sm:rounded-3xl p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl relative max-h-[90dvh] overflow-y-auto">
         <div className="flex items-center justify-between border-b panel-border pb-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">

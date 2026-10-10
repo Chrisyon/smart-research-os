@@ -26,6 +26,13 @@
   --accent-primary: #4f46e5;
 }
 
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -37,6 +44,19 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  /* Respect physical phone radius and safe areas */
+  padding-top: var(--sat);
+  padding-bottom: var(--sab);
+  padding-left: var(--sal);
+  padding-right: var(--sar);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Normalize browser default button & form input backgrounds */

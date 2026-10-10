@@ -38,35 +38,35 @@ Modern deep learning sequence modeling has systematically transitioned from recu
   };
 
   return (
-    <div className="p-8 max-w-5xl mx-auto space-y-8">
+    <div className="p-3 sm:p-8 max-w-5xl mx-auto space-y-4 sm:space-y-8 overflow-y-auto">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-white/10 pb-6">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-semibold uppercase tracking-wider">
+      <div className="flex items-center justify-between border-b border-white/10 pb-4 sm:pb-6 gap-2">
+        <div className="space-y-1 min-w-0">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">
             <BookOpen className="w-3.5 h-3.5" /> AI Synthesis Engine
           </div>
-          <h1 className="text-2xl font-bold text-white">Executive Summaries & Synthesis</h1>
-          <p className="text-xs text-gray-400">Generate structured summaries across indexed documents</p>
+          <h1 className="text-lg sm:text-2xl font-bold text-white truncate">Executive Summaries & Synthesis</h1>
+          <p className="text-[10px] sm:text-xs text-gray-400">Generate structured summaries across indexed documents</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleCopy}
-            className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-gray-300 flex items-center gap-2 transition-colors border border-white/10"
+            className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-gray-300 flex items-center gap-1.5 transition-colors border border-white/10 shrink-0"
           >
             {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-            <span>{copied ? 'Copied!' : 'Copy Summary'}</span>
+            <span className="hidden sm:inline">{copied ? 'Copied!' : 'Copy Summary'}</span>
           </button>
         </div>
       </div>
 
       {/* Type Tabs */}
-      <div className="flex items-center gap-2 border-b border-white/10 pb-3 overflow-x-auto">
+      <div className="flex items-center gap-1.5 sm:gap-2 border-b border-white/10 pb-2.5 overflow-x-auto no-scrollbar">
         {(['executive', 'overview', 'detailed', 'key_findings', 'comparison'] as SummaryType[]).map((type) => (
           <button
             key={type}
             onClick={() => setSummaryType(type)}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all whitespace-nowrap ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all whitespace-nowrap shrink-0 ${
               summaryType === type
                 ? 'bg-purple-600/30 text-purple-300 border border-purple-500/50 glow-indigo'
                 : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
@@ -78,7 +78,7 @@ Modern deep learning sequence modeling has systematically transitioned from recu
       </div>
 
       {/* Summary Render Area */}
-      <div className="p-8 rounded-3xl glass-panel border border-white/10 space-y-6 glow-indigo">
+      <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl glass-panel border border-white/10 space-y-4 sm:space-y-6 glow-indigo">
         <div className="flex items-center justify-between border-b border-white/10 pb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold">

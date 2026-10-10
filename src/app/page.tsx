@@ -57,7 +57,7 @@ export default function Home() {
 
   return (
     <ThemeProvider>
-      <div className="flex flex-col h-screen bg-slate-950 text-slate-100 overflow-hidden font-sans select-none">
+      <div className="flex flex-col h-[100dvh] max-h-[100dvh] w-full bg-slate-950 text-slate-100 overflow-hidden font-sans select-none">
         {/* Top Modern Header Bar */}
         <Header
           projects={projects}
@@ -72,7 +72,7 @@ export default function Home() {
         />
 
         {/* Dynamic Main Workspace View */}
-        <main className="flex-1 overflow-hidden p-4 md:p-6 bg-slate-950">
+        <main className="flex-1 overflow-hidden p-2 sm:p-4 md:p-6 bg-slate-950 min-h-0">
           {currentTab === 'workspace' && (
             <ResearchWorkspace
               project={activeProject}
