@@ -14,6 +14,7 @@ import { SummaryHub } from '@/components/SummaryHub';
 import { store } from '@/services/store';
 import { ThemeProvider } from '@/services/themeContext';
 import { Project, Document, MessageCitation } from '@/types';
+import { MessageSquare, BookOpen, Network, Layers, FileText } from 'lucide-react';
 
 export default function Home() {
   const [currentTab, setCurrentTab] = useState<string>('workspace');
@@ -102,6 +103,36 @@ export default function Home() {
 
           {currentTab === 'summaries' && <SummaryHub documents={documents} />}
         </main>
+
+        {/* Mobile Bottom Navigation Bar (Ultra-responsive for mobile touch) */}
+        <nav className="md:hidden border-t panel-border bg-slate-950/95 backdrop-blur-md px-1 py-1 flex items-center justify-around shrink-0 z-40">
+          {[
+            { id: 'workspace', label: 'Chat AI', icon: MessageSquare },
+            { id: 'viewer', label: 'Reader', icon: BookOpen },
+            { id: 'graph', label: 'Graph', icon: Network },
+            { id: 'flashcards', label: 'Flashcard', icon: Layers },
+            { id: 'summaries', label: 'Ringkasan', icon: FileText },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isActive = currentTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setCurrentTab(tab.id)}
+                className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all cursor-pointer touch-manipulation active:scale-90 ${
+                  isActive ? 'text-indigo-400 font-bold' : 'text-slate-400 hover:text-slate-200'
+                }`}
+                style={{ WebkitTapHighlightColor: 'rgba(99, 102, 241, 0.2)' }}
+              >
+                <div className={`p-1 rounded-lg ${isActive ? 'bg-indigo-600/20 text-indigo-400' : ''}`}>
+                  <Icon className="w-4 h-4" />
+                </div>
+                <span className="text-[10px] mt-0.5 leading-none">{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
 
         {/* Modals */}
         <ApiKeyModal
