@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+:root {
+  --bg-app: #0b0f17;
+  --bg-surface: #111726;
+  --bg-surface-hover: #1b2336;
+  --bg-card: rgba(17, 23, 38, 0.85);
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-active: rgba(99, 102, 241, 0.5);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-primary: #6366f1;
+}
+
+.light-theme {
+  --bg-app: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f5f9;
+  --bg-card: #ffffff;
+  --border-subtle: #cbd5e1;
+  --border-active: #6366f1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --accent-primary: #4f46e5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Normalize browser default button & form input backgrounds */
+button {
+  background-color: transparent;
+  color: inherit;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+input, select, textarea {
+  background-color: rgba(15, 23, 42, 0.85);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  font: inherit;
+}
+
+option {
+  background-color: #0f172a;
+  color: #f8fafc;
+}
+
+/* Linear & Notion Style Thin Panel Borders */
+.panel-border {
+  border-color: var(--border-subtle);
+}
+
+.surface-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.18s ease-in-out;
+}
+
+.surface-card:hover {
+  background-color: var(--bg-surface-hover);
+  border-color: var(--border-active);
+}
+
+/* Citation Pulse Highlight */
+@keyframes neon-pulse {
+  0% {
+    background-color: rgba(99, 102, 241, 0.25);
+    border-color: rgba(99, 102, 241, 0.6);
+  }
+  50% {
+    background-color: rgba(99, 102, 241, 0.45);
+    border-color: rgba(168, 85, 247, 0.8);
+  }
+  100% {
+    background-color: rgba(99, 102, 241, 0.25);
+    border-color: rgba(99, 102, 241, 0.6);
+  }
+}
+
+.citation-passage-highlight {
+  animation: neon-pulse 2.5s infinite ease-in-out;
+  border-left: 3px solid var(--accent-primary);
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+/* Custom Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
