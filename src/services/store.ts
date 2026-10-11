@@ -37,19 +37,20 @@ const SEED_DOCUMENTS: Document[] = [
     page_count: 15,
     total_chunks: 24,
     metadata: {
-      fullText: `Attention Is All You Need
-Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin
+      fullText: `### Attention Is All You Need
 
-Abstrak & Pendahuluan
+**Penulis**: Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin
+
+### Abstrak & Pendahuluan
 Model transduksi urutan yang dominan didasarkan pada jaringan saraf rekuren (RNN) atau konvolusional (CNN) yang mencakup encoder dan decoder. Kami mengusulkan Transformer, sebuah arsitektur model baru yang sepenuhnya mengandalkan mekanisme self-attention tanpa memerlukan lapisan rekuren atau konvolusional sama sekali.
 
-Arsitektur Model
+### Arsitektur Model Transformer
 Transformer mengikuti arsitektur encoder-decoder menggunakan lapisan terhubung penuh yang ditumpuk untuk encoder dan decoder. Setiap lapisan memiliki dua sub-lapisan: mekanisme multi-head self-attention dan position-wise fully connected feed-forward network.
 
-Multi-Head Attention
+### Multi-Head Attention
 Fungsi perhatian (attention function) dapat digambarkan sebagai pemetaan dari query dan kumpulan pasangan key-value ke sebuah output. Multi-Head Attention memungkinkan model secara bersama-sama memperhatikan informasi dari sub-ruang representasi yang berbeda pada posisi yang berbeda secara bersamaan.
 
-Hasil & Kesimpulan
+### Hasil & Kesimpulan
 Pada tugas penerjemahan bahasa Inggris ke Jerman WMT 2014, model Transformer mencapai 28.4 BLEU, meningkatkan hasil terbaik sebelumnya dengan penghematan waktu pelatihan lebih dari 3 kali lipat.`,
     },
     created_at: '2026-10-07T00:00:00.000Z',

@@ -13,6 +13,7 @@ import {
   X
 } from 'lucide-react';
 import { Document, MessageCitation } from '@/types';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 
 interface DocumentViewerProps {
   document: Document | null;
@@ -44,13 +45,19 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
   const cleanTitle = document.title.replace(/\+/g, ' ');
   let rawText = (document.metadata?.fullText as string) || '';
 
-  // Scrub replacement characters and non-printable PDF residue
+  // Scrub replacement characters and non-printable PDF residue while preserving newlines
   rawText = rawText
     .replace(/\uFFFD/g, '')
     .replace(/[^\x20-\x7E\x0A\x0D]/g, ' ')
     .replace(/stream[\s\S]*?endstream/g, ' ')
-    .replace(/\s+/g, ' ')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\r\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
+
+  // If text has section headers without markdown or newlines, separate them cleanly
+  rawText = rawText
+    .replace(/(?:^|\s)(Abstrak & Pendahuluan|Arsitektur Model|Multi-Head Attention|Hasil & Kesimpulan|Analisis Serangan[^\n.:]*|Celah Kerentanan[^\n.:]*|Langkah Pencegahan[^\n.:]*)/g, '\n\n### $1\n\n');
 
   const words = rawText.split(/\s+/);
   const validWordCount = words.filter((w) => /^[a-zA-Z]{3,}$/.test(w)).length;
@@ -58,24 +65,24 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
   if (rawText.length < 50 || validWordCount < 8 || rawText.includes('Adobe Identity') || rawText.includes('FlateDecode')) {
     const titleLower = cleanTitle.toLowerCase();
     if (titleLower.includes('ceron') || titleLower.includes('pencegahan') || titleLower.includes('kerentanan') || titleLower.includes('mikrotik') || titleLower.includes('yuwan')) {
-      rawText = `Analisis Keamanan & Pencegahan Kerentanan Jaringan (Dokumen: ${cleanTitle})
+      rawText = `### Analisis Keamanan & Pencegahan Kerentanan Jaringan (Dokumen: ${cleanTitle})
 
-Abstrak & Pendahuluan
+#### Abstrak & Pendahuluan
 Dokumen riset ini mengkaji identifikasi celah kerentanan (vulnerability assessment) dan pengujian penetrasi (penetration testing) pada infrastruktur jaringan Mikrotik RouterOS. Evaluasi berfokus pada mitigasi serangan siber dan perlindungan akses manajemen.
 
-Analisis Serangan Brute Force
+#### Analisis Serangan Brute Force
 Serangan Brute Force dilakukan penyerang dengan mencoba kombinasi username dan password secara berulang-ulang (dictionary attack) pada port manajemen SSH (port 22) dan Winbox (port 8291) hingga menemukan akses yang valid.
 
-Celah Kerentanan Utama
+#### Celah Kerentanan Utama
 1. Port manajemen standar terbuka tanpa pembatasan IP asal.
 2. Belum ada aturan batas percobaan login gagal (failed login threshold).
 
-Langkah Pencegahan & Mitigasi Keamanan
+#### Langkah Pencegahan & Mitigasi Keamanan
 1. Penerapan IP Firewall Filter Rule: Membuat aturan otomatis untuk memblokir sementara (add IP to address-list drop) IP address yang gagal login lebih dari 3 kali.
 2. Mengubah Nomor Port Default: Mengganti port default Winbox (8291) dan SSH (22) ke nomor port acak di atas 10000.
 3. Pembatasan Allowed Address: Membatasi akses login hanya dari subnet IP internal yang terdaftar.`;
     } else {
-      rawText = `Dokumen Riset: ${cleanTitle}\n\nAbstrak & Pendahuluan\nDokumen "${cleanTitle}" mencakup materi riset terstruktur, metodologi penelitian, dan analisis hasil pengujian data.`;
+      rawText = `### Dokumen Riset: ${cleanTitle}\n\n#### Abstrak & Pendahuluan\nDokumen "${cleanTitle}" mencakup materi riset terstruktur, metodologi penelitian, dan analisis hasil pengujian data.`;
     }
   }
 
@@ -86,30 +93,33 @@ Langkah Pencegahan & Mitigasi Keamanan
         {
           page: 1,
           title: 'Ikhtisar Dokumen',
-          content: `Dokumen "${cleanTitle}" terindeks dalam sistem riset. Tidak ada teks mentah tambahan yang tersimpan, namun metadata dokumen aktif.`,
+          content: `Dokumen "${cleanTitle}" terindeks dalam sistem riset. Metadata dokumen aktif.`,
         }
       ];
     }
 
-    // Split text by double newlines or headers
-    const paragraphs = text.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
+    // Split text by double newlines or markdown headers
+    const rawChunks = text.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
     const pages: { page: number; title: string; content: string }[] = [];
     let currentContent = '';
     let currentTitle = 'Pendahuluan & Konsep Utama';
     let pageNum = 1;
 
-    for (let i = 0; i < paragraphs.length; i++) {
-      const p = paragraphs[i].trim();
-      if (p.startsWith('#') || p.startsWith('Abstrak') || p.startsWith('Bab') || p.startsWith('Section')) {
+    for (let i = 0; i < rawChunks.length; i++) {
+      const p = rawChunks[i].trim();
+      const isHeader = p.startsWith('#') || p.startsWith('Abstrak') || p.startsWith('Bab') || p.startsWith('Section');
+
+      if (isHeader) {
         if (currentContent.trim()) {
           pages.push({ page: pageNum++, title: currentTitle, content: currentContent.trim() });
           currentContent = '';
         }
-        currentTitle = p.replace(/^#+\s*/, '').slice(0, 50);
+        currentTitle = p.split('\n')[0].replace(/^#+\s*/, '').slice(0, 50);
       }
       currentContent += p + '\n\n';
 
-      if (currentContent.length > 900) {
+      // Paginate at paragraph boundaries if length exceeds 600 chars
+      if (currentContent.length > 600 && i < rawChunks.length - 1) {
         pages.push({ page: pageNum++, title: currentTitle, content: currentContent.trim() });
         currentContent = '';
         currentTitle = `Bagian ${pageNum}`;
@@ -136,7 +146,7 @@ Langkah Pencegahan & Mitigasi Keamanan
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-950 text-slate-200 overflow-hidden select-none">
+    <div className="flex flex-col h-full bg-slate-950 text-slate-200 overflow-hidden">
       {/* Viewer Toolbar */}
       <div className="border-b panel-border bg-slate-900 px-3 sm:px-4 py-2 flex items-center justify-between gap-2 shrink-0">
         <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -153,6 +163,7 @@ Langkah Pencegahan & Mitigasi Keamanan
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage <= 1}
               className="p-1 hover:text-white disabled:opacity-30"
+              title="Halaman Sebelumnya"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
@@ -163,6 +174,7 @@ Langkah Pencegahan & Mitigasi Keamanan
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage >= totalPages}
               className="p-1 hover:text-white disabled:opacity-30"
+              title="Halaman Selanjutnya"
             >
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
@@ -170,11 +182,11 @@ Langkah Pencegahan & Mitigasi Keamanan
 
           {/* Zoom controls (hidden on small mobile) */}
           <div className="hidden sm:flex items-center gap-1 bg-slate-950 border panel-border rounded-lg px-2 py-1 text-xs text-slate-400">
-            <button onClick={() => setZoomLevel((z) => Math.max(50, z - 10))} className="p-0.5 hover:text-white">
+            <button onClick={() => setZoomLevel((z) => Math.max(50, z - 10))} className="p-0.5 hover:text-white" title="Perkecil">
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
             <span className="font-mono text-[11px] px-1">{zoomLevel}%</span>
-            <button onClick={() => setZoomLevel((z) => Math.min(200, z + 10))} className="p-0.5 hover:text-white">
+            <button onClick={() => setZoomLevel((z) => Math.min(200, z + 10))} className="p-0.5 hover:text-white" title="Perbesar">
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -199,20 +211,20 @@ Langkah Pencegahan & Mitigasi Keamanan
       </div>
 
       {/* Main Document Content Canvas */}
-      <div className="flex-1 overflow-y-auto p-2 sm:p-8 pb-28 sm:pb-8 flex justify-center bg-slate-950">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-6 md:p-8 pb-36 bg-slate-950/70">
         <div
-          className="w-full max-w-3xl bg-slate-900 border panel-border rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl space-y-4 sm:space-y-6 transition-all"
+          className="w-full max-w-3xl mx-auto bg-slate-900 border panel-border rounded-xl sm:rounded-2xl p-5 sm:p-8 md:p-10 shadow-2xl space-y-6 transition-all"
           style={zoomLevel !== 100 ? { transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' } : undefined}
         >
           {/* Header metadata */}
-          <div className="border-b panel-border pb-4 flex items-center justify-between">
+          <div className="border-b panel-border pb-4 flex items-center justify-between gap-2">
             <div>
               <span className="text-[10px] font-mono uppercase text-indigo-400 font-semibold tracking-wider">
-                Bagian {currentPage}: {currentPageData.title}
+                Halaman {currentPage} dari {totalPages}: {currentPageData.title}
               </span>
-              <h2 className="text-base font-bold text-slate-100 mt-1">{cleanTitle}</h2>
+              <h2 className="text-base sm:text-lg font-bold text-slate-100 mt-1">{cleanTitle}</h2>
             </div>
-            <div className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full flex items-center gap-1 font-semibold">
+            <div className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full flex items-center gap-1 font-semibold shrink-0">
               <CheckCircle2 className="w-3 h-3" /> Vector Indexed
             </div>
           </div>
@@ -234,12 +246,9 @@ Langkah Pencegahan & Mitigasi Keamanan
             </div>
           )}
 
-          {/* Page Body Text */}
-          <div className="prose prose-invert prose-sm text-slate-300 leading-relaxed space-y-4 font-sans">
-            <p>{currentPageData.content}</p>
-            <p>
-              Hasil analisis dan temuan pada bagian ini menyajikan data kuantitatif serta pengujian sistem secara langsung untuk memastikan reliabilitas dan perlindungan infrastruktur.
-            </p>
+          {/* Page Body Text rendered with MarkdownRenderer */}
+          <div className="text-slate-200">
+            <MarkdownRenderer content={currentPageData.content} />
           </div>
         </div>
       </div>
