@@ -210,8 +210,10 @@ Hasil pengujian empiris membuktikan reliabilitas model yang diusulkan dengan pen
     let extractedText = '';
     if (selectedFile) {
       extractedText = await readActualFileText(selectedFile);
+    } else if (fileType === 'youtube' && urlInput) {
+      extractedText = `### Video YouTube: ${docTitle}\n\nSumber: ${urlInput}\n\nVideo ini telah ditambahkan ke koleksi riset Anda. Gunakan tab Reader untuk menonton video langsung di dalam aplikasi, atau klik "Buka Asli" untuk membuka di YouTube.`;
     } else if (urlInput) {
-      extractedText = `Konten terambil dari URL: ${urlInput}`;
+      extractedText = `### Artikel Web: ${docTitle}\n\nSumber: ${urlInput}\n\nArtikel ini telah ditambahkan ke koleksi riset Anda. Klik "Buka Artikel" di Reader untuk membaca artikel sumber.`;
     }
 
     // Stage 2: Chunking algorithm

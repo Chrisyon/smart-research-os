@@ -108,7 +108,9 @@ class LocalStore {
       const rawDocs: Document[] = d ? JSON.parse(d) : SEED_DOCUMENTS;
 
       // Auto-clean any loaded document that contains binary PDF residue or Skia/PDF Google Docs stream residue
+      // Skip cleaning for youtube and url documents — they have intentionally short/different text
       this.documents = rawDocs.map((doc) => {
+        if (doc.file_type === 'youtube' || doc.file_type === 'url') return doc;
         let fullText = (doc.metadata?.fullText as string) || '';
         const isResidue = fullText.includes('endstream') || fullText.includes('endobj') || fullText.includes('\uFFFD') || fullText.includes('PDFExpress') || fullText.includes('Skia') || fullText.includes('Google Docs') || fullText.length < 30 || (fullText.match(/[~><|\^%\$#\{\}\[\]\\\/@]/g) || []).length > 5;
 

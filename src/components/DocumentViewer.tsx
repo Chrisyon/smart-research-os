@@ -68,6 +68,8 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
   const youtubeId = isYouTube ? extractYouTubeId(sourceUrl) : null;
   let rawText = (document.metadata?.fullText as string) || '';
 
+  // Skip heavy PDF text scrubbing for YouTube / URL docs — they rely on embed player
+  if (!isYouTube && !isWebUrl) {
   // Scrub replacement characters and non-printable PDF residue while preserving newlines
   rawText = rawText
     .replace(/\uFFFD/g, '')
@@ -140,6 +142,7 @@ Dokumen "${cleanTitle}" menyajikan materi riset akademik terstruktur yang mencak
 Berdasarkan evaluasi data kuantitatif, analisis menyajikan rekomendasi teknis dan langkah implementasi praktis untuk mendukung keandalan sistem.`;
     }
   }
+  } // end: skip text scrubbing for YouTube/URL
 
   // Dynamically divide rawText into pages
   const parsePagesFromText = (text: string) => {
