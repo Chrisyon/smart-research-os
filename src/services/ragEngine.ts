@@ -117,9 +117,9 @@ Langkah Pencegahan & Mitigasi Keamanan
         usableText = `Dokumen: ${cleanTitle} (teks tidak dapat diekstrak dari PDF ini)`;
       }
 
-      // Cap at ~6000 chars per doc to stay within token limits
-      if (usableText.length > 6000) {
-        usableText = usableText.slice(0, 6000) + '\n\n[...teks selanjutnya terpotong]';
+      // Cap at ~35,000 chars per doc to provide deep, comprehensive context to Gemini Flash
+      if (usableText.length > 35000) {
+        usableText = usableText.slice(0, 35000) + '\n\n[...bagian selanjutnya diindeks dalam sistem]';
       }
 
       fullDocContexts.push({ docTitle: cleanTitle, fullText: usableText, docId: doc.id });
