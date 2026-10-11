@@ -199,10 +199,10 @@ Langkah Pencegahan & Mitigasi Keamanan
       </div>
 
       {/* Main Document Content Canvas */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-8 flex justify-center bg-slate-950">
+      <div className="flex-1 overflow-y-auto p-2 sm:p-8 pb-28 sm:pb-8 flex justify-center bg-slate-950">
         <div
-          className="w-full max-w-3xl bg-slate-900 border panel-border rounded-2xl p-4 sm:p-8 shadow-2xl space-y-4 sm:space-y-6 transition-all"
-          style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
+          className="w-full max-w-3xl bg-slate-900 border panel-border rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-xl space-y-4 sm:space-y-6 transition-all"
+          style={zoomLevel !== 100 ? { transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' } : undefined}
         >
           {/* Header metadata */}
           <div className="border-b panel-border pb-4 flex items-center justify-between">

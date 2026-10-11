@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { BookOpen, Sparkles, Copy, Check, FileText, Download, CheckCircle2 } from 'lucide-react';
 import { Document, SummaryType } from '@/types';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 
 interface SummaryHubProps {
   documents: Document[];
@@ -38,7 +39,7 @@ Modern deep learning sequence modeling has systematically transitioned from recu
   };
 
   return (
-    <div className="p-3 sm:p-8 max-w-5xl mx-auto space-y-4 sm:space-y-8 overflow-y-auto">
+    <div className="h-full p-3 sm:p-8 max-w-5xl mx-auto space-y-4 sm:space-y-8 overflow-y-auto pb-28 md:pb-8">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-white/10 pb-4 sm:pb-6 gap-2">
         <div className="space-y-1 min-w-0">
@@ -93,9 +94,7 @@ Modern deep learning sequence modeling has systematically transitioned from recu
           </span>
         </div>
 
-        <div className="prose prose-invert prose-sm max-w-none text-gray-200 whitespace-pre-wrap leading-relaxed font-sans">
-          {sampleSummary}
-        </div>
+        <MarkdownRenderer content={sampleSummary} className="text-gray-200" />
       </div>
     </div>
   );

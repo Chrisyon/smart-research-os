@@ -49,6 +49,30 @@ export default function Home() {
     };
   }, [activeProject]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleResetScroll = () => {
+      if (window.scrollY !== 0) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      }
+    };
+
+    window.addEventListener('resize', handleResetScroll);
+    window.addEventListener('orientationchange', handleResetScroll);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResetScroll);
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResetScroll);
+      window.removeEventListener('orientationchange', handleResetScroll);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResetScroll);
+      }
+    };
+  }, []);
+
   const handleOpenViewer = (docId: string, citation?: MessageCitation) => {
     const doc = store.getDocument(docId) || documents[0] || null;
     setActiveDocument(doc);
@@ -84,7 +108,7 @@ export default function Home() {
           )}
 
           {currentTab === 'viewer' && (
-            <div className="h-full max-w-6xl mx-auto rounded-2xl border panel-border overflow-hidden">
+            <div className="h-full max-w-6xl mx-auto md:rounded-2xl md:border md:panel-border overflow-hidden">
               <DocumentViewer
                 document={activeDocument || documents[0] || null}
                 activeCitation={activeCitation}
@@ -99,13 +123,21 @@ export default function Home() {
             </div>
           )}
 
-          {currentTab === 'flashcards' && <FlashcardHub />}
+          {currentTab === 'flashcards' && (
+            <div className="h-full max-w-4xl mx-auto">
+              <FlashcardHub />
+            </div>
+          )}
 
-          {currentTab === 'summaries' && <SummaryHub documents={documents} />}
+          {currentTab === 'summaries' && (
+            <div className="h-full max-w-5xl mx-auto">
+              <SummaryHub documents={documents} />
+            </div>
+          )}
         </main>
 
         {/* Mobile Bottom Navigation Bar (Ultra-responsive for mobile touch) */}
-        <nav className="md:hidden border-t panel-border bg-slate-950/95 backdrop-blur-md px-1 py-1 flex items-center justify-around shrink-0 z-40">
+        <nav className="md:hidden border-t panel-border bg-slate-950/95 backdrop-blur-md px-1 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex items-center justify-around shrink-0 z-40">
           {[
             { id: 'workspace', label: 'Chat AI', icon: MessageSquare },
             { id: 'viewer', label: 'Reader', icon: BookOpen },

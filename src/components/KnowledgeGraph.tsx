@@ -32,31 +32,32 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ onSelectNodeDocu
   );
 
   return (
-    <div className="flex h-full bg-gray-950 border border-white/10 rounded-2xl glass-panel overflow-hidden">
+    <div className="flex flex-col md:flex-row h-full bg-gray-950 border border-white/10 rounded-2xl glass-panel overflow-hidden">
       {/* Canvas Node Graph Area */}
-      <div className="flex-1 flex flex-col relative bg-black/60 overflow-hidden">
+      <div className="flex-1 flex flex-col relative bg-black/60 overflow-hidden min-h-[220px]">
         {/* Graph Controls Bar */}
-        <div className="absolute top-4 left-4 z-10 flex items-center gap-3 bg-gray-900/90 border border-white/10 p-2 rounded-2xl backdrop-blur-md">
-          <div className="flex items-center gap-2 px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-xl text-xs font-bold">
-            <Network className="w-4 h-4 text-indigo-400" /> Interactive Knowledge Graph
+        <div className="absolute top-2 left-2 right-2 md:right-auto md:top-4 md:left-4 z-10 flex items-center justify-between md:justify-start gap-1.5 sm:gap-3 bg-gray-900/90 border border-white/10 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl backdrop-blur-md">
+          <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold shrink-0">
+            <Network className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-400" />
+            <span className="hidden xs:inline">Knowledge Graph</span>
           </div>
-          <div className="h-4 w-px bg-white/10"></div>
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5" />
+          <div className="h-4 w-px bg-white/10 hidden xs:block"></div>
+          <div className="relative flex-1 xs:flex-none">
+            <Search className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-400 absolute left-2.5 top-2" />
             <input
               type="text"
-              placeholder="Find concept..."
+              placeholder="Cari konsep..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-gray-950 border border-white/10 rounded-xl pl-8 pr-3 py-1 text-xs text-gray-200 focus:outline-none focus:border-indigo-500"
+              className="w-full xs:w-28 sm:w-36 bg-gray-950 border border-white/10 rounded-lg sm:rounded-xl pl-7 sm:pl-8 pr-2 sm:pr-3 py-1 text-[11px] sm:text-xs text-gray-200 focus:outline-none focus:border-indigo-500"
             />
           </div>
-          <div className="flex items-center gap-1 text-xs text-gray-400">
-            <button onClick={() => setZoom((z) => Math.max(50, z - 10))} className="p-1 hover:text-white">
+          <div className="flex items-center gap-1 text-xs text-gray-400 shrink-0">
+            <button onClick={() => setZoom((z) => Math.max(50, z - 10))} className="p-1 hover:text-white" title="Zoom Out">
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
             <span className="font-mono text-[10px]">{zoom}%</span>
-            <button onClick={() => setZoom((z) => Math.min(180, z + 10))} className="p-1 hover:text-white">
+            <button onClick={() => setZoom((z) => Math.min(180, z + 10))} className="p-1 hover:text-white" title="Zoom In">
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -64,8 +65,8 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ onSelectNodeDocu
 
         {/* Visual Canvas Visualization (Interactive Node Cloud) */}
         <div
-          className="flex-1 flex items-center justify-center p-12 relative transition-all"
-          style={{ transform: `scale(${zoom / 100})` }}
+          className="flex-1 flex items-center justify-center p-6 sm:p-12 relative transition-all"
+          style={zoom !== 100 ? { transform: `scale(${zoom / 100})` } : undefined}
         >
           {/* Edge Connection SVG Lines */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none stroke-indigo-500/30 stroke-2">
@@ -80,11 +81,11 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ onSelectNodeDocu
               const isSelected = selectedNode?.id === node.id;
               // Positioning offsets for demo graph layout
               const positions = [
-                { top: '35%', left: '25%' },
-                { top: '25%', left: '48%' },
-                { top: '42%', left: '68%' },
-                { top: '65%', left: '30%' },
-                { top: '68%', left: '62%' },
+                { top: '35%', left: '20%' },
+                { top: '22%', left: '46%' },
+                { top: '40%', left: '68%' },
+                { top: '65%', left: '26%' },
+                { top: '68%', left: '60%' },
               ];
               const pos = positions[index % positions.length];
 
@@ -92,18 +93,18 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ onSelectNodeDocu
                 <div
                   key={node.id}
                   onClick={() => setSelectedNode(node)}
-                  className={`absolute p-4 rounded-2xl glass-card cursor-pointer border transition-all ${
+                  className={`absolute p-2.5 sm:p-4 rounded-xl sm:rounded-2xl glass-card cursor-pointer border transition-all ${
                     isSelected
-                      ? 'bg-indigo-600/30 border-indigo-400 glow-indigo text-white scale-110'
+                      ? 'bg-indigo-600/30 border-indigo-400 glow-indigo text-white scale-105 sm:scale-110 z-10'
                       : 'border-white/10 hover:border-indigo-500/40 text-gray-300'
                   }`}
                   style={{ top: pos.top, left: pos.left }}
                 >
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-indigo-400 animate-pulse"></div>
-                    <span className="text-xs font-bold whitespace-nowrap">{node.label}</span>
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-indigo-400 animate-pulse"></div>
+                    <span className="text-[11px] sm:text-xs font-bold whitespace-nowrap">{node.label}</span>
                   </div>
-                  <span className="text-[9px] font-mono text-indigo-300 uppercase tracking-wider block mt-1">
+                  <span className="text-[8px] sm:text-[9px] font-mono text-indigo-300 uppercase tracking-wider block mt-0.5">
                     {node.node_type}
                   </span>
                 </div>
@@ -113,37 +114,37 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ onSelectNodeDocu
         </div>
       </div>
 
-      {/* Node Inspector Panel */}
-      <div className="w-80 border-l border-white/10 p-5 space-y-5 bg-gray-900/80 overflow-y-auto">
+      {/* Node Inspector Panel (Bottom drawer on mobile, side panel on desktop) */}
+      <div className="w-full md:w-80 border-t md:border-t-0 md:border-l border-white/10 p-3.5 sm:p-5 space-y-3 sm:space-y-4 bg-gray-900/95 overflow-y-auto max-h-56 md:max-h-none shrink-0 pb-20 md:pb-5">
         {selectedNode ? (
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <span className="text-[10px] font-mono uppercase text-indigo-400 font-semibold tracking-wider">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="space-y-0.5">
+              <span className="text-[9px] sm:text-[10px] font-mono uppercase text-indigo-400 font-semibold tracking-wider">
                 Concept Inspector
               </span>
-              <h3 className="text-base font-bold text-white">{selectedNode.label}</h3>
-              <span className="inline-block px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] uppercase font-mono font-semibold">
+              <h3 className="text-sm sm:text-base font-bold text-white">{selectedNode.label}</h3>
+              <span className="inline-block px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[9px] sm:text-[10px] uppercase font-mono font-semibold">
                 {selectedNode.node_type}
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-black/40 border border-white/5 space-y-2">
-              <span className="text-xs font-semibold text-gray-300">Description</span>
-              <p className="text-xs text-gray-400 leading-relaxed">{selectedNode.description}</p>
+            <div className="p-2.5 sm:p-3.5 rounded-xl bg-black/40 border border-white/5 space-y-1 sm:space-y-2">
+              <span className="text-[11px] sm:text-xs font-semibold text-gray-300">Description</span>
+              <p className="text-[11px] sm:text-xs text-gray-400 leading-relaxed">{selectedNode.description}</p>
             </div>
 
             {/* Provenance Evidence */}
-            <div className="space-y-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+            <div className="space-y-1.5 sm:space-y-2">
+              <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400">
                 Source Evidence & Relationships
               </span>
               {SAMPLE_EDGES.filter(
                 (e) => e.source_node_id === selectedNode.id || e.target_node_id === selectedNode.id
               ).map((edge) => (
-                <div key={edge.id} className="p-3 rounded-xl glass-card space-y-1 text-xs">
+                <div key={edge.id} className="p-2 sm:p-3 rounded-xl glass-card space-y-1 text-[11px] sm:text-xs">
                   <div className="flex items-center justify-between text-indigo-300 font-semibold">
                     <span>Relationship:</span>
-                    <span className="font-mono text-[10px] uppercase">{edge.relationship_type}</span>
+                    <span className="font-mono text-[9px] sm:text-[10px] uppercase">{edge.relationship_type}</span>
                   </div>
                   <p className="text-gray-400 italic">"{edge.evidence_text}"</p>
                 </div>

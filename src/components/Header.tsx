@@ -42,32 +42,6 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenApiKey,
 }) => {
   const { theme, toggleTheme } = useTheme();
-  const touchStartPos = React.useRef<{ x: number; y: number } | null>(null);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length > 0) {
-      touchStartPos.current = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-      };
-    }
-  };
-
-  const handleTouchEnd = (tabId: string, e: React.TouchEvent) => {
-    if (!touchStartPos.current) {
-      setCurrentTab(tabId);
-      return;
-    }
-    const touch = e.changedTouches[0];
-    if (touch) {
-      const dx = Math.abs(touch.clientX - touchStartPos.current.x);
-      const dy = Math.abs(touch.clientY - touchStartPos.current.y);
-      if (dx < 15 && dy < 15) {
-        setCurrentTab(tabId);
-      }
-    }
-    touchStartPos.current = null;
-  };
 
   const navTabs = [
     { id: 'workspace', label: 'AI Workspace', icon: MessageSquare },
@@ -78,7 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="bg-slate-950/95 backdrop-blur-md z-20 shrink-0 border-b panel-border">
+    <header className="bg-slate-950/95 backdrop-blur-md z-20 shrink-0 border-b panel-border pt-[max(0.25rem,env(safe-area-inset-top))]">
       {/* Top Bar: Brand, Project Selector, Quick Action Buttons */}
       <div className="px-3 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-2">
         {/* Brand & Project Selector */}
@@ -163,8 +137,8 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Horizontal Nav Bar (Mobile-friendly smooth horizontal scroll) */}
-      <div className="px-2 sm:px-6 py-1.5 bg-slate-950 border-t panel-border flex items-center gap-1.5 overflow-x-auto no-scrollbar relative z-30 touch-pan-x">
+      {/* Horizontal Nav Bar (Desktop Only - Mobile uses Bottom Navigation Bar) */}
+      <div className="hidden md:flex px-6 py-1.5 bg-slate-950 border-t panel-border items-center gap-1.5 overflow-x-auto no-scrollbar relative z-30">
         {navTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = currentTab === tab.id;
@@ -173,14 +147,11 @@ export const Header: React.FC<HeaderProps> = ({
               key={tab.id}
               type="button"
               onClick={() => setCurrentTab(tab.id)}
-              onTouchStart={handleTouchStart}
-              onTouchEnd={(e) => handleTouchEnd(tab.id, e)}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap shrink-0 transition-all cursor-pointer touch-manipulation active:scale-95 ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap shrink-0 transition-all cursor-pointer ${
                 isActive
                   ? 'bg-indigo-600 text-white shadow-md'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900 bg-slate-950/60'
               }`}
-              style={{ WebkitTapHighlightColor: 'rgba(99, 102, 241, 0.2)' }}
             >
               <Icon className="w-3.5 h-3.5 shrink-0" />
               <span>{tab.label}</span>

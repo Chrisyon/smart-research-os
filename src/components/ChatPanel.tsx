@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Document, Message, MessageCitation } from '@/types';
 import { askRAGEngine } from '@/services/ragEngine';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 
 interface ChatPanelProps {
   documents: Document[];
@@ -157,7 +158,11 @@ All claims are grounded in your documents with **clickable citation chips** \`[1
                     : 'glass-card border-white/10 text-gray-200 rounded-tl-none'
                 }`}
               >
-                <div className="whitespace-pre-wrap font-sans">{msg.content}</div>
+                {isUser ? (
+                  <div className="whitespace-pre-wrap font-sans">{msg.content}</div>
+                ) : (
+                  <MarkdownRenderer content={msg.content} />
+                )}
 
                 {/* Citations Chips */}
                 {msg.citations && msg.citations.length > 0 && (
@@ -223,6 +228,11 @@ All claims are grounded in your documents with **clickable citation chips** \`[1
             placeholder="Ask a question across your documents..."
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
+            onBlur={() => {
+              if (typeof window !== 'undefined') {
+                window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+              }
+            }}
             disabled={isGenerating}
             className="w-full bg-gray-950 border border-white/10 rounded-xl pl-4 pr-12 py-3 text-sm text-gray-200 focus:outline-none focus:border-indigo-500 transition-colors"
           />

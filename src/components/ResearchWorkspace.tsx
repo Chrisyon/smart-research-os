@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { Document, Message, MessageCitation, Project } from '@/types';
 import { askRAGEngine } from '@/services/ragEngine';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 
 interface ResearchWorkspaceProps {
   project: Project | null;
@@ -280,7 +281,11 @@ Tanyakan apa saja seputar dokumen Anda (seperti *"ini file isinya apa"*, *"sebut
                         : 'bg-slate-950/70 border-slate-800 text-slate-200 rounded-tl-none max-w-[92%]'
                     }`}
                   >
-                    <div className="whitespace-pre-wrap font-sans">{msg.content}</div>
+                    {isUser ? (
+                      <div className="whitespace-pre-wrap font-sans">{msg.content}</div>
+                    ) : (
+                      <MarkdownRenderer content={msg.content} />
+                    )}
 
                     {/* Citations Chips */}
                     {msg.citations && msg.citations.length > 0 && (
@@ -346,6 +351,11 @@ Tanyakan apa saja seputar dokumen Anda (seperti *"ini file isinya apa"*, *"sebut
                 placeholder="Tanyakan sesuatu dari dokumen Anda..."
                 value={inputQuery}
                 onChange={(e) => setInputQuery(e.target.value)}
+                onBlur={() => {
+                  if (typeof window !== 'undefined') {
+                    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+                  }
+                }}
                 disabled={isGenerating}
                 className="w-full bg-slate-900 border panel-border rounded-xl pl-3 sm:pl-4 pr-11 py-2.5 sm:py-3 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 shadow-sm"
               />

@@ -55,7 +55,7 @@ export const FlashcardHub: React.FC = () => {
   };
 
   return (
-    <div className="p-3 sm:p-8 max-w-4xl mx-auto space-y-4 sm:space-y-8 overflow-y-auto">
+    <div className="h-full p-3 sm:p-8 max-w-4xl mx-auto space-y-4 sm:space-y-8 overflow-y-auto pb-28 md:pb-8">
       {/* Title Header */}
       <div className="flex items-center justify-between gap-2">
         <div className="space-y-1 min-w-0">
